@@ -6,9 +6,13 @@
 		<h1 class="monospace">
 			{{ venue.name }}
 		</h1>
+		<button onclick="deleteVenue(this)" style="padding: 0%; color:red; background-color:white; margin-bottom: 5px; border: #dde2e7;" data-id="{{ venue.id }}">Delete Venue</button>
+		<button onclick="editVenue(this)" style="padding: 0%; color:green; background-color:white; margin-bottom: 5px; border: #dde2e7;" data-id="{{ venue.id }}">Edit Venue</button>
 		<p class="subtitle">
 			ID: {{ venue.id }}
 		</p>
+		
+
 		<div class="genres">
 			{% for genre in venue.genres %}
 			<span class="genre">{{ genre }}</span>
@@ -74,6 +78,39 @@
 		{% endfor %}
 	</div>
 </section>
+
+
+<script>
+	function editVenue(e){
+		const Id = e.dataset.id;
+		fetch('/venues/'+Id+'/edit' , {method: 'GET'})
+		.then(function(){
+			window.location.href = '/venues/'+Id+'/edit';
+		})
+		.catch(function(e){
+			console.error(e);
+		})
+
+	}
+	function deleteVenue(e){
+		const Id = e.dataset.id;
+		fetch('/venues/'+Id , {method: 'DELETE'})
+		.then(function(){ //redirecct to venues page
+			window.location.href = '/venues';
+		})
+		.catch(function(e){
+			console.error(e);
+		})
+
+	}
+</script>
+
+
+
+
+
+
+
 
 {% endblock %}
 

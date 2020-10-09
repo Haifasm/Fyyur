@@ -6,7 +6,10 @@
 		<h1 class="monospace">
 			{{ artist.name }}
 		</h1>
-		<p class="subtitle">
+		<button onclick="editArtist(this)" style="padding: 0%; color:green; background-color:white; margin-bottom: 5px; border: #dde2e7;" data-id="{{ artist.id }}">Edit Artist</button>
+		<!--<button style="padding: 0%; color:red; background-color:white; margin-bottom: 5px; border: #dde2e7;" data-id="{{ artist.id }}">Delete Artist</button>
+		-->
+			<p class="subtitle">
 			ID: {{ artist.id }}
 		</p>
 		<div class="genres">
@@ -71,6 +74,31 @@
 		{% endfor %}
 	</div>
 </section>
+
+<script>
+	function editArtist(e){
+		const Id = e.dataset.id;
+		fetch('/artists/'+Id+'/edit' , {method: 'GET'})
+		.then(function(){
+			window.location.href = '/artists/'+Id+'/edit';
+		})
+		.catch(function(e){
+			console.error(e);
+		})
+
+	}
+	// function deleteVenue(e){
+	// 	const Id = e.dataset.id;
+	// 	fetch('/venues/'+Id , {method: 'DELETE'})
+	// 	.then(function(){ 
+	// 		window.location.href = '/venues';
+	// 	})
+	// 	.catch(function(e){
+	// 		console.error(e);
+	// 	})
+
+	// }
+</script>
 
 {% endblock %}
 
