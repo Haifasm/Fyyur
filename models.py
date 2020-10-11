@@ -15,6 +15,18 @@ class Venue(db.Model):
     seeking_talent = db.Column(db.Boolean, nullable=True, default=False)
     seeking_description = db.Column(db.String(1000))
     shows = db.relationship('Show', backref='pVenue', lazy=True, cascade='all, delete')
+     
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.update(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
     
 class Artist(db.Model):
     __tablename__ = 'Artist'
@@ -31,9 +43,22 @@ class Artist(db.Model):
     seeking_description = db.Column(db.String(1000))
     shows = db.relationship('Show', backref='pArtist', lazy=True, cascade='all, delete')
 
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.update(self)
+        db.session.commit()
+
+
 class Show(db.Model):
     __tablename__ = 'Show'
     id = db.Column(db.Integer, primary_key=True)
     start_time = db.Column(db.DateTime, nullable=False)
     artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id', ondelete='CASCADE'), nullable=False)
     venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id', ondelete='CASCADE'), nullable=False)
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()

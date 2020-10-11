@@ -7,7 +7,7 @@ import dateutil.parser
 from flask_babel import Babel
 from flask_migrate import Migrate
 import babel
-from flask import Flask, render_template, request, Response, flash, redirect, url_for
+from flask import Flask, render_template, request, Response, flash, redirect, url_for, abort
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 import logging
@@ -79,7 +79,7 @@ def venues():
     return render_template('pages/venues.html', areas=result)
 
 #search venues with partial string search and case-insensitive.
-@app.route('/venues/search', methods=['POST'])    #num_upcoming_shows left
+@app.route('/venues/search', methods=['POST'])  
 def search_venues():
     # main.html -> name="search_term"
     search_term = request.form.get('search_term', '')
@@ -100,6 +100,8 @@ def search_venues():
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
     venue = Venue.query.get(venue_id)
+    if venue is None:
+      abort(404)
     shows = Show.query.filter_by(venue_id = venue_id).all()
     upcoming_shows = []
     past_shows = []
@@ -185,8 +187,7 @@ def create_venue_submission():
                         facebook_link=facebook_link, website=website, genres=genres,
                         seeking_talent=seeking_talent, seeking_description=seeking_description)
 
-          db.session.add(venue)
-          db.session.commit()
+          venue.create()
       except Exception as e:
           error = True
           db.session.rollback()
@@ -195,8 +196,7 @@ def create_venue_submission():
           db.session.close()
       if error:
           # TODO: on unsuccessful db insert, flash an error instead.
-          flash('An error occurred. Venue ' +
-                request.form['name'] + ' could not be listed.')
+          flash('An error occurred. Venue ' + request.form['name'] + ' could not be listed.')
       else:
           flash('Venue ' + request.form['name'] + ' was successfully listed!')
     else:
@@ -217,8 +217,7 @@ def delete_venue(venue_id):
   try:
     venues = Venue.query.get(venue_id)
     name = venues.name
-    db.session.delete(venues)
-    db.session.commit()
+    venues.delete()
   except Exception as e:
     error = True
     db.session.rollback()
@@ -230,11 +229,8 @@ def delete_venue(venue_id):
     flash('Error)')
   else:
     flash('Venue ' +name+' deleted.')
-    # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
-    # clicking that button delete it from the db then redirect the user to the homepage
+
   return 'OK'
-
-
 
 #  Artists
 #  ----------------------------------------------------------------
@@ -274,7 +270,11 @@ def search_artists():
 def show_artist(artist_id):
     # shows the venue page with the given venue_id
     # TODO: replace with real venue data from the venues table, using venue_id
+    
     artist = Artist.query.get(artist_id)
+    if artist is None:
+      abort(404)
+  
     shows = Show.query.filter_by(artist_id = artist_id).all()
     past_shows = []
     upcoming_shows = []
@@ -353,8 +353,7 @@ def edit_artist_submission(artist_id):
         artist.image_link=form.image_link.data
         artist.seeking_venue=form.seeking_venue.data
         artist.seeking_description=form.seeking_description.data
-        db.session.add(artist)
-        db.session.commit()
+        artist.update()
       except Exception as e:
         error = True
         db.session.rollback()
@@ -410,8 +409,7 @@ def edit_venue_submission(venue_id):
         else:
           venue.seeking_talent = False
         
-        db.session.add(venue)
-        db.session.commit()
+        venue.update()
       except Exception as e:
         error = True
         db.session.rollback()
@@ -470,8 +468,7 @@ def create_artist_submission():
                             facebook_link=facebook_link, seeking_venue=seeking_venue,
                             seeking_description=seeking_description)
 
-          db.session.add(artist)
-          db.session.commit()
+          artist.create()
       except Exception as e:
           error = True
           db.session.rollback()
@@ -539,8 +536,7 @@ def create_show_submission():
           venue_id = form.venue_id.data
           start_time = form.start_time.data
           show = Show(artist_id=artist_id, venue_id=venue_id, start_time=start_time)
-          db.session.add(show)
-          db.session.commit()
+          show.create()
       except Exception as e:
           error = True
           db.session.rollback()

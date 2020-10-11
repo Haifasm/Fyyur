@@ -6,8 +6,9 @@
 		<h1 class="monospace">
 			{{ venue.name }}
 		</h1>
-		<button onclick="deleteVenue(this)" style="padding: 0%; color:red; background-color:white; margin-bottom: 5px; border: #dde2e7;" data-id="{{ venue.id }}">Delete Venue</button>
-		<button onclick="editVenue(this)" style="padding: 0%; color:green; background-color:white; margin-bottom: 5px; border: #dde2e7;" data-id="{{ venue.id }}">Edit Venue</button>
+
+		<button onclick="editVenue(this)" style="padding: 0%; color:green; background-color:white; margin-bottom: 5px; border: #dde2e7; display:block;" data-id="{{ venue.id }}">Edit Venue</button>
+		<button onclick="deleteVenue(this)" style="padding: 0%; color:red; background-color:white; margin-bottom: 5px; border: #dde2e7; display:block;" data-id="{{ venue.id }}">Delete Venue</button>
 		<p class="subtitle">
 			ID: {{ venue.id }}
 		</p>
